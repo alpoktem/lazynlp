@@ -119,6 +119,10 @@ lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensi
 		You can see the list of excluded domains at lazynlp/exclude_domains.txt.
 
 		You can see the list of excluded extensions at lazynlp/exclude_extensions.txt
+
+	language:
+
+		Insert the language of the webpage so that justext can use the correct stopwords. For list of languages see: https://nlp.fi.muni.cz/projects/justext/
 	
 	You can also add your own domains and extensions to skip with domains and extensions and arguments.
 	
@@ -149,7 +153,7 @@ You can get rid of all HTML tags, decode utf-8 into string, transliterate foreig
 You can also just call the following function to do most of the processing.
 
 ``
-lazynlp.clean_page(page)
+lazynlp.clean_page(page, language)
 ``
 
 
