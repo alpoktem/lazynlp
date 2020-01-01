@@ -13,11 +13,11 @@ from .utils import *
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def parse_html(page):
+def parse_html(page, lang='English'):
     """ Clean HTML tags for webpages that aren't Gutenberg books
     """
     try:
-        parts = justext.justext(page, justext.get_stoplist('English'))
+        parts = justext.justext(page, justext.get_stoplist(lang))
     except lxml.etree.ParserError as e:
         print('Page empty')
         return ''
@@ -103,7 +103,7 @@ def connect_lines(txt, line_sep='\n'):
     return result + curr
 
 
-def clean_page(page):
+def clean_page(page, lang='English'):
     try:
         page = page.decode('utf-8')
     except UnicodeDecodeError as e:
@@ -112,7 +112,7 @@ def clean_page(page):
     page = page.strip()
     if not page:
         return ''
-    txt = parse_html(page)
+    txt = parse_html(page, lang)
     txt = transliterate(txt)
     txt = html.unescape(txt)
     return txt

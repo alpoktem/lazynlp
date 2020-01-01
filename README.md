@@ -94,7 +94,7 @@ lazynlp.download_page(link, context=None, timeout=None)
 If you want to download from a file that contains a list of URLs, call:
 
 ``
-lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensions=[], domains=[])
+lazynlp.download_pages(link_file, folder, timeout=30, default_skip=True, extensions=[], domains=[], language='English')
 ``
 
 	

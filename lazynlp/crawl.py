@@ -102,19 +102,18 @@ def to_skip(link, extensions=None, domains=None):
         return True
     return False
 
-
-def download_page(link, context=None, timeout=None):
+def download_page(link, context=None, timeout=None, headers=None):
     """
-    Return code, page
-    0: successfully read (write to index)
-    1: bad_url (write to bad_url)
-    2: unicode error (write to non_ascii_urls)
-    3. bad_connection_urls
-
-    When code is not 0, return ''
-    """
+	Return code, page
+	0: successfully read (write to index)
+	1: bad_url (write to bad_url)
+	2: unicode error (write to non_ascii_urls)
+	3. bad_connection_urls
+	When code is not 0, return ''
+	"""
+    headers = headers if headers else {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"}
     try:
-        req = urllib.request.Request(link)
+        req = urllib.request.Request(link, headers=headers)
     except ValueError as e:
         print(link, "doesn't exist.")
         return 1, ''
@@ -123,16 +122,18 @@ def download_page(link, context=None, timeout=None):
         return 3, ''
 
     try:
-        if timeout is not None:
-            response = urllib.request.urlopen(
-                req, context=context, timeout=timeout)
+        if not timeout is None:
+            response = urllib.request.urlopen(req, context=context, timeout=timeout)
+            print(response)
         else:
             response = urllib.request.urlopen(req, context=context)
+            print(response)
     except UnicodeError as e:
         print('UnicodeError for', link)
         return 2, ''
     except (urllib.error.HTTPError) as e:
         print('Error {} for {}'.format(e.code, link))
+        print(e)
         return 1, ''
     except urllib.error.URLError as e:
         print('URLError for', link)
@@ -157,7 +158,6 @@ def download_page(link, context=None, timeout=None):
         return 3, ''
     return 0, page
 
-
 def get_current_idx(index_file, links):
     lines = open(index_file, 'r').readlines()
     idx = len(lines)
@@ -175,7 +175,8 @@ def download_pages(link_file,
                    timeout=30,
                    default_skip=True,
                    extensions=[],
-                   domains=[]):
+                   domains=[],
+                   language='English'):
     """
     link_file (str):
         file contains links to pages to crawl. Each line contains one URL.
@@ -199,6 +200,9 @@ def download_pages(link_file,
 
         You can also add your own domains and extensions to skip with domains
         and extensions and arguments.
+
+    language (string):
+        Language name needed for stop words list in justext. For list of language names: https://nlp.fi.muni.cz/projects/justext/
 
     In the folder:
             Each URL is downloaded into a file, indexed by the order in which
@@ -263,7 +267,7 @@ def download_pages(link_file,
         if code > 0:
             continue
 
-        txt = clean_page(page)
+        txt = clean_page(page, language)
 
         if not txt:
             print('Empty page', link)
