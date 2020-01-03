@@ -13,7 +13,7 @@ from .utils import *
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def parse_html(page, lang='English'):
+def parse_html(page, lang='English', get_boilerplate_if_empty=True):
     """ Clean HTML tags for webpages that aren't Gutenberg books
     """
     try:
@@ -28,6 +28,8 @@ def parse_html(page, lang='English'):
     for part in parts:
         if not part.is_boilerplate:
             paragraphs.append(part.text)
+    if len(paragraphs) == 0 and get_boilerplate_if_empty:
+        paragraphs = [part.text for part in parts]
     return '\n\n'.join(paragraphs)
 
 

@@ -124,10 +124,8 @@ def download_page(link, context=None, timeout=None, headers=None):
     try:
         if not timeout is None:
             response = urllib.request.urlopen(req, context=context, timeout=timeout)
-            print(response)
         else:
             response = urllib.request.urlopen(req, context=context)
-            print(response)
     except UnicodeError as e:
         print('UnicodeError for', link)
         return 2, ''
